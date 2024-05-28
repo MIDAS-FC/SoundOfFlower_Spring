@@ -30,7 +30,23 @@ public enum ErrorCode {
     NOT_SoundOfFlower_SOCIALTYPE(HttpStatus.BAD_REQUEST,"SAC4","자체 서비스 회원가입 시 만든 비밀번호만 변경 가능합니다."),
     SEND_EMAIL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"SAS1","이메일 전송을 실패했습니다."),
     NOT_EQUAL_EACH_TOKEN_SOCIALID(HttpStatus.BAD_REQUEST, "SAT10","로그인한 사용자의 Refresh Token이 아닙니다"),
+<<<<<<< Updated upstream
     ILLEGAL_TOKEN(HttpStatus.BAD_REQUEST, "SAT11","JWT 토큰이 잘못되었습니다.");
+=======
+    ILLEGAL_TOKEN(HttpStatus.BAD_REQUEST, "SAT11","JWT 토큰이 잘못되었습니다."),
+
+    WRONG_ADMIN_CODE(HttpStatus.BAD_REQUEST,"SAA1","Admin코드가 틀렸습니다."),
+    EXIST_ADMIN_EMAIL(HttpStatus.BAD_REQUEST,"SAA2","Admin 이메일이 존재합니다."),
+
+    NOT_EXIST_MUSIC_SPOTIFY(HttpStatus.NOT_FOUND, "SAM1", "해당 spotify를 찾을 수 없습니다."),
+    EXTERNAL_API_FAILURE(HttpStatus.BAD_GATEWAY,"SAG1","외부 api와 통신이 불가능합니다."),
+
+    OVER_SIZE(HttpStatus.BAD_REQUEST,"SAI1","용량은 2MB를 초과 할 수 없습니다."),
+    OVER_COUNT(HttpStatus.BAD_REQUEST,"SAI2","갯수는 9개를 초과 할 수 없습니다."),
+
+    NOT_EXIST_DIARY(HttpStatus.NOT_FOUND,"SAD1","일기를 찾을 수 없습니다."),
+    NOT_EXIST_TITLE_DIARY(HttpStatus.NOT_FOUND,"SAD2","제목이 없습니다.");
+>>>>>>> Stashed changes
 
     private final HttpStatus status;
     private final String code;

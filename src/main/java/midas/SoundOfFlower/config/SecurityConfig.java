@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import midas.SoundOfFlower.entity.Role;
 import midas.SoundOfFlower.jwt.error.JwtErrorHandler;
 import midas.SoundOfFlower.jwt.filter.JwtAuthenticationProcessingFilter;
 import midas.SoundOfFlower.jwt.service.JwtService;
@@ -16,7 +17,8 @@ import midas.SoundOfFlower.oauth.handler.OAuth2LoginSuccessHandler;
 import midas.SoundOfFlower.oauth.service.CustomOAuth2UserService;
 import midas.SoundOfFlower.redis.repository.BlackListRepository;
 import midas.SoundOfFlower.redis.repository.RefreshTokenRepository;
-import midas.SoundOfFlower.repository.UserRepository;
+import midas.SoundOfFlower.repository.user.UserRepository;
+import midas.SoundOfFlower.service.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +42,7 @@ public class SecurityConfig {
 
     private final LoginService loginService;
     private final JwtService jwtService;
+    private final AuthService authService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BlackListRepository blackListRepository;
@@ -53,25 +56,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf((auth) -> auth.disable())
+                .csrf((csrf) -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
-                .formLogin((auth) -> auth.disable());
-
-        http
-                .httpBasic((auth) -> auth.disable());
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/auth/**","/profile","/diary/test/**").permitAll()
-                        .anyRequest().authenticated());
-        http
-                .oauth2Login((oauth2) -> oauth2
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.getKey())
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
-                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)));
 
         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
@@ -111,7 +110,7 @@ public class SecurityConfig {
 
     @Bean
     public Filter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository, blackListRepository, jwtErrorHandler);
+        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService,authService, userRepository, blackListRepository, jwtErrorHandler);
         return jwtAuthenticationFilter;
     }
 

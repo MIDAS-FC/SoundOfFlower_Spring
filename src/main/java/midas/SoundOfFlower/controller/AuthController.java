@@ -1,10 +1,12 @@
 package midas.SoundOfFlower.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import midas.SoundOfFlower.dto.request.*;
+import midas.SoundOfFlower.jwt.dto.response.TokenResponse;
 import midas.SoundOfFlower.jwt.service.JwtService;
 import midas.SoundOfFlower.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Slf4j
-@RequestMapping("/auth")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -39,7 +40,7 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/resend-email")
+    @PostMapping("/auth/resend-email")
     public ResponseEntity<Object> reSendEmail(@RequestBody EmailRequest emailRequest) {
 
         authService.sendEmail(emailRequest);
@@ -55,14 +56,22 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<Object> signup(@RequestPart(value = "file", required = false) MultipartFile multipartFile, @Valid @RequestPart(value = "userRequestDto") UserRequest userRequest) throws IOException {
+    public ResponseEntity<Object> signup(@RequestPart(value = "file", required = false) MultipartFile multipartFile, @Valid @RequestPart(value = "signup") UserRequest userRequest) throws IOException {
 
         authService.signup(userRequest.getEmail(), userRequest.getPassword(), multipartFile, userRequest.getNickName());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/auth/reset/password")
+    @PostMapping("/auth/admin/register")
+    public ResponseEntity<Object> signup(@Valid @RequestBody AdminUserRequest adminUserRequest) {
+
+        authService.adminSignUp(adminUserRequest);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/auth/reset/password")
     public ResponseEntity<Object> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
 
         authService.resetPassword(resetPasswordRequest);
@@ -75,11 +84,23 @@ public class AuthController {
 
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String socialId = principal.getUsername();
-        log.info("socialId:{}", socialId);
         String accessToken = jwtService.extractAccessToken(request).get();
         authService.logout(accessToken, socialId);
         SecurityContextHolder.clearContext();
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/token/reissue")
+    public ResponseEntity<Object> refresh(HttpServletRequest request, HttpServletResponse response) {
+
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String socialId = principal.getUsername();
+        String accessToken = jwtService.extractAccessToken(request).get();
+        String refreshToken = jwtService.extractRefreshToken(request).get();
+        TokenResponse tokenResponse = authService.validateToken(accessToken,refreshToken, socialId);
+        jwtService.setTokens(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

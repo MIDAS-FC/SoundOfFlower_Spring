@@ -4,12 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import midas.SoundOfFlower.dto.request.EmailRequest;
-import midas.SoundOfFlower.dto.request.ResetPasswordRequest;
-import midas.SoundOfFlower.dto.request.ValidateNickNameRequest;
-import midas.SoundOfFlower.dto.request.VerifyEmailRequest;
-import midas.SoundOfFlower.dto.response.ModifyAttributeResponse;
-import midas.SoundOfFlower.entity.Role;
+import midas.SoundOfFlower.dto.request.*;
 import midas.SoundOfFlower.entity.User;
 import midas.SoundOfFlower.error.CustomException;
 import midas.SoundOfFlower.jwt.dto.response.TokenResponse;
@@ -22,7 +17,7 @@ import midas.SoundOfFlower.redis.entity.RefreshToken;
 import midas.SoundOfFlower.redis.repository.BlackListRepository;
 import midas.SoundOfFlower.redis.repository.EmailAuthenticationRepository;
 import midas.SoundOfFlower.redis.repository.RefreshTokenRepository;
-import midas.SoundOfFlower.repository.UserRepository;
+import midas.SoundOfFlower.repository.user.UserRepository;
 import midas.SoundOfFlower.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +34,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
+import static midas.SoundOfFlower.entity.Role.ADMIN;
+import static midas.SoundOfFlower.entity.Role.USER;
 import static midas.SoundOfFlower.error.ErrorCode.*;
 import static midas.SoundOfFlower.jwt.error.TokenStatus.EXPIRED;
 import static midas.SoundOfFlower.oauth.dto.SocialType.SoundOfFlower;
@@ -62,8 +59,11 @@ public class AuthService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("default.profile")
+    @Value("${default.profile}")
     private String defaultProfile;
+
+    @Value("${admin.code}")
+    private String adminCode;
 
     @Transactional
     public void sendEmail(EmailRequest emailRequest) {
@@ -98,7 +98,7 @@ public class AuthService {
         }
         User user=User.builder()
                 .nickName(nickName)
-                .role(Role.USER.getKey())
+                .role(USER.getKey())
                 .build();
 
         userRepository.save(user);
@@ -165,7 +165,7 @@ public class AuthService {
             throw new CustomException(NOT_SoundOfFlower_SOCIALTYPE);
         }
 
-        userRepository.findBySocialTypeAndEmail(resetPasswordRequest.getSocialType(),resetPasswordRequest.getEmail())
+        userRepository.findBySocialTypeAndEmailAndRole(resetPasswordRequest.getSocialType(),resetPasswordRequest.getEmail(),USER.getKey())
                 .ifPresentOrElse(user -> {
                     user.updatePassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
                     userRepository.save(user);
@@ -177,7 +177,7 @@ public class AuthService {
 
         TokenStatus tokenValid = jwtService.isTokenValid(refreshToken);
 
-        if (!tokenValid.equals(EXPIRED)) {
+        if (tokenValid.equals(EXPIRED)) {
             jwtErrorHandler.tokenError(tokenValid);
         }
         if (blackListRepository.existsByAccessToken(accessToken)) {
@@ -279,16 +279,33 @@ public class AuthService {
         return url;
     }
 
-    public ModifyAttributeResponse getEmailNickName(String socialId) {
+    @Transactional
+    public void adminSignUp(AdminUserRequest adminUserRequest) {
 
-        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new CustomException(NOT_EXIST_USER_SOCIALID));
+        if (!adminUserRequest.getAdminCode().equals(adminCode)) {
+            throw new CustomException(WRONG_ADMIN_CODE);
+        }
 
-        ModifyAttributeResponse modifyAttributeResponse=ModifyAttributeResponse
-                .builder()
-                .email(user.getEmail())
-                .nickName(user.getNickName())
+        if (userRepository.existsByEmailAndRole(adminUserRequest.getEmail(), ADMIN.getKey())) {
+            throw new CustomException(EXIST_ADMIN_EMAIL);
+        }
+
+        String socialId = UUID.randomUUID().toString().replace("-", "").substring(0, 13);
+        String nickName = UUID.randomUUID().toString().replace("-", "").substring(0, 13);
+        String password = passwordEncoder.encode(adminUserRequest.getPassword());
+
+        User user = User.builder()
+                .email(adminUserRequest.getEmail())
+                .password(password)
+                .nickName(nickName)
+                .socialId(socialId)
+                .imageUrl(defaultProfile)
+                .socialType(SoundOfFlower.getKey())
+                .role(ADMIN.getKey())
                 .build();
 
-        return modifyAttributeResponse;
+        userRepository.save(user);
     }
+
+
 }
