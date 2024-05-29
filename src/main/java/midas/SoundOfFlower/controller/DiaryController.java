@@ -48,7 +48,7 @@ public class DiaryController {
                                              @RequestParam Long month,
                                              @RequestParam Long day,
                                              @RequestPart(value = "diary") WriteDiaryRequest writeDiaryRequest,
-                                             @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
+                                             @RequestPart(value = "images",required = false) List<MultipartFile> images) throws IOException {
 
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String socialId = principal.getUsername();

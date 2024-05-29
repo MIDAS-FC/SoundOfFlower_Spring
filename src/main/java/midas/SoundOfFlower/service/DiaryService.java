@@ -73,7 +73,7 @@ public class DiaryService {
 
         List<String> imageUrls = null;
 
-        if (images != null || images.size() != 0) {
+        if (images != null) {
             imageUrls = diaryImageService.uploadDiaryImages(images);
             diaryInfoResponse.updateImgUrl(imageUrls);
 
