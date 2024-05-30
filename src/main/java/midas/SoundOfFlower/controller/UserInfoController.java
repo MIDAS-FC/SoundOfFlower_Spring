@@ -25,6 +25,19 @@ public class UserInfoController {
     private final AuthService authService;
     private final DiaryService diaryService;
 
+    @GetMapping("/profile")
+    public ResponseEntity<Object> getProfile() {
+        Map<String, String> profile = new HashMap<>();
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String socialId = principal.getUsername();
+
+        String profileUrl = authService.getProfile(socialId);
+
+        profile.put("imageUrl", profileUrl);
+
+        return ResponseEntity.ok(profile);
+    }
+
     @PutMapping("/reset/nickname")
     public ResponseEntity<Object> changeNickName(@RequestBody ValidateNickNameRequest validateNickNameRequest) {
 

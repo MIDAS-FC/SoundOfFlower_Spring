@@ -41,7 +41,7 @@ public class DiaryService {
     private final MusicRepository musicRepository;
     private final RestTemplate restTemplate;
     private final DiaryImageService diaryImageService;
-    private final MusicLikesService musicLikesService;
+    private final MusicService musicService;
 
     public List<DiaryInfoResponse> searchMonthDiaryInfo(Long year, Long month, String socialId) {
         return diaryRepository.getMonthDiaryInfo(year, month, socialId);
@@ -192,7 +192,7 @@ public class DiaryService {
         }
         if (diaryInfoResponse != null) {
 
-            boolean likes = musicLikesService.isLikes(diaryInfoResponse.getSpotify(), socialId);
+            boolean likes = musicService.isLikes(diaryInfoResponse.getSpotify(), socialId);
             diaryInfoResponse.updateLike(likes);
         }
 

@@ -2,7 +2,9 @@ package midas.SoundOfFlower.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import midas.SoundOfFlower.dto.response.DiaryInfoResponse;
 import midas.SoundOfFlower.dto.response.PageResultResponse;
+import midas.SoundOfFlower.dto.response.PlayListResponse;
 import midas.SoundOfFlower.entity.Music;
 import midas.SoundOfFlower.entity.MusicLike;
 import midas.SoundOfFlower.entity.User;
@@ -13,8 +15,12 @@ import midas.SoundOfFlower.repository.music.MusicRepository;
 import midas.SoundOfFlower.repository.musiclike.MusicLikeRepository;
 import midas.SoundOfFlower.repository.user.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,13 +30,14 @@ import static midas.SoundOfFlower.error.ErrorCode.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MusicLikesService {
+public class MusicService {
 
     private final UserRepository userRepository;
     private final MusicTotalLikesRepository redisMusicTotalLikesRepository;
     private final MusicLikeRepository musicLikeRepository;
     private final MusicRepository musicRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RestTemplate restTemplate;
 
     private final String TOTAL_LIKES = "totalLikes";
 
@@ -179,5 +186,28 @@ public class MusicLikesService {
 
     private void updateSortedSet(String spotify, Double totalLikes) {
         redisTemplate.opsForZSet().add(TOTAL_LIKES, spotify, totalLikes);
+    }
+
+    public void sendPlaylist(String playlist) {
+
+        try {
+            String url = "http://localhost:8000/soundOfFlower/updateDB";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> requestMap = new HashMap<>();
+            requestMap.put("playlist", playlist);
+
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestMap, headers);
+            PlayListResponse playListResponse = restTemplate.postForObject(url, requestEntity, PlayListResponse.class);
+
+            if (!playListResponse.isValidInput()) {
+
+                throw new CustomException(NOT_EXIST_ADMIN_PLAYLIST);
+            }
+
+        } catch (Exception e) {
+            throw new CustomException(EXTERNAL_API_FAILURE);
+        }
     }
 }

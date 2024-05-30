@@ -308,4 +308,10 @@ public class AuthService {
     }
 
 
+    public String getProfile(String socialId) {
+
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new CustomException(NOT_EXIST_USER_SOCIALID));
+
+        return user.getImageUrl();
+    }
 }
