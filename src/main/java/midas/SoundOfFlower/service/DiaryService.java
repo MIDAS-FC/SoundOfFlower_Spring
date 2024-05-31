@@ -71,6 +71,8 @@ public class DiaryService {
 
         diaryRepository.save(diary);
 
+        diaryInfoResponse.updateDiaryId(diary.getId());
+
         List<String> imageUrls = null;
 
         if (images != null) {
@@ -159,7 +161,7 @@ public class DiaryService {
 
         if (writeDiaryRequest.getComment() != null) {
             diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
-
+            diaryInfoResponse.updateDiaryId(diary.getId());
             diary.updateComment(writeDiaryRequest.getComment());
             diary.updateEmotion(diaryInfoResponse.getAngry(),
                     diaryInfoResponse.getSad(),

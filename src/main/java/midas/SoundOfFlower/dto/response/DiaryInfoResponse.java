@@ -49,6 +49,10 @@ public class DiaryInfoResponse {
         this.love = love;
     }
 
+    public void updateDiaryId(Long diaryId) {
+        this.diaryId = diaryId;
+    }
+
     public void updateMusic(String spotify) {
         this.spotify = spotify;
     }
