@@ -125,7 +125,7 @@ public class DiaryService {
                 .sad(diaryInfoResponse.getSad())
                 .delight(diaryInfoResponse.getDelight())
                 .calm(diaryInfoResponse.getCalm())
-                .embarrased(diaryInfoResponse.getEmbarrased())
+                .depressed(diaryInfoResponse.getDepressed())
                 .anxiety(diaryInfoResponse.getAnxiety())
                 .love(diaryInfoResponse.getLove())
                 .user(user)
@@ -169,7 +169,7 @@ public class DiaryService {
                     diaryInfoResponse.getSad(),
                     diaryInfoResponse.getDelight(),
                     diaryInfoResponse.getCalm(),
-                    diaryInfoResponse.getEmbarrased(),
+                    diaryInfoResponse.getDepressed(),
                     diaryInfoResponse.getAnxiety(),
                     diaryInfoResponse.getLove());
             diary.updateFlower(diaryInfoResponse.getFlower());

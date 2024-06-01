@@ -39,7 +39,7 @@ public class DiaryRepositoryImpl implements SearchDiary, DeleteDiary {
                         diary.sad,
                         diary.delight,
                         diary.calm,
-                        diary.embarrased,
+                        diary.depressed,
                         diary.anxiety,
                         diary.love,
                         diary.music.spotify,
@@ -80,7 +80,7 @@ public class DiaryRepositoryImpl implements SearchDiary, DeleteDiary {
                         diary.sad,
                         diary.delight,
                         diary.calm,
-                        diary.embarrased,
+                        diary.depressed,
                         diary.anxiety,
                         diary.love,
                         diary.music.spotify,
@@ -115,7 +115,7 @@ public class DiaryRepositoryImpl implements SearchDiary, DeleteDiary {
                         diary.sad,
                         diary.delight,
                         diary.calm,
-                        diary.embarrased,
+                        diary.depressed,
                         diary.anxiety,
                         diary.love
                 ))

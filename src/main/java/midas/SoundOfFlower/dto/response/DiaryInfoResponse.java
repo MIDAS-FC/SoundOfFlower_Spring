@@ -15,6 +15,9 @@ public class DiaryInfoResponse {
 
     private Long diaryId;
 
+    private String title;
+    private String comment;
+
     private String flower;
 
     private List<String> imgUrl;
@@ -23,7 +26,7 @@ public class DiaryInfoResponse {
     private Double sad;
     private Double delight;
     private Double calm;
-    private Double embarrased;
+    private Double depressed;
     private Double anxiety;
     private Double love;
 
@@ -39,12 +42,12 @@ public class DiaryInfoResponse {
         this.imgUrl = imgUrl;
     }
 
-    public void updateEmotion(Double angry, Double sad, Double delight, Double calm, Double embarrased, Double anxiety,Double love) {
+    public void updateEmotion(Double angry, Double sad, Double delight, Double calm, Double depressed, Double anxiety,Double love) {
         this.angry = angry;
         this.sad = sad;
         this.delight = delight;
         this.calm = calm;
-        this.embarrased = embarrased;
+        this.depressed = depressed;
         this.anxiety = anxiety;
         this.love = love;
     }

@@ -25,7 +25,7 @@ public class Diary {
     @Column(name = "diary_id")
     private Long id;
 
-    @Column(length = 50)
+    @Column(length = 200)
     private String title;
 
     @Column(length = 4000)
@@ -41,17 +41,17 @@ public class Diary {
     private Double sad;
     private Double delight;
     private Double calm;
-    private Double embarrased;
+    private Double depressed;
     private Double anxiety;
     private Double love;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "social_id", referencedColumnName = "socialId")
+    @JoinColumn(name = "social_id", referencedColumnName = "socialId",nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "spotify", referencedColumnName = "spotify")
+    @JoinColumn(name = "spotify", referencedColumnName = "spotify",nullable = false)
     private Music music;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -87,12 +87,12 @@ public class Diary {
         this.comment = comment;
     }
 
-    public void updateEmotion(Double angry, Double sad, Double delight, Double calm, Double embarrased, Double anxiety, Double love) {
+    public void updateEmotion(Double angry, Double sad, Double delight, Double calm, Double depressed, Double anxiety, Double love) {
         this.angry = angry;
         this.sad = sad;
         this.delight = delight;
         this.calm = calm;
-        this.embarrased = embarrased;
+        this.depressed = depressed;
         this.anxiety = anxiety;
         this.love = love;
     }

@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class LoveMusic {
 
     @Id
-    @Column(name = "spotify", insertable = false, updatable = false, nullable = false)
+    @Column(name = "spotify", insertable = false, updatable = false, nullable = false, length = 30)
     private String spotify;
 
-    @Column(name = "emotion_type", insertable = false, updatable = false, nullable = false)
+    @Column(name = "emotion_type", insertable = false, updatable = false, nullable = false, length = 10)
     private String emotionType;
 
     @OneToOne

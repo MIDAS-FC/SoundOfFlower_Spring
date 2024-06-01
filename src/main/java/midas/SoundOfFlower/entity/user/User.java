@@ -22,9 +22,8 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
+    @Column(unique = true, length = 100)
+    private String socialId;
 
     private String email; // 이메일
 
@@ -33,6 +32,8 @@ public class User {
 
     @Column(length = 30)
     private String nickName; // 닉네임
+
+    @Column(length = 2048)
     private String imageUrl; // 프로필 이미지
 
     @Column(length = 5)
@@ -40,9 +41,6 @@ public class User {
 
     @Column(length = 15)
     private String socialType; // KAKAO, NAVER, GOOGLE
-
-    @Column(unique = true, length = 100)
-    private String socialId; // 로그인한 소셜 타입의 식별자 값
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Diary> diary = new ArrayList<>();

@@ -19,7 +19,7 @@ public class StatisticalEmotionResponse {
     private Double sad;
     private Double delight;
     private Double calm;
-    private Double embarrased;
+    private Double depressed;
     private Double anxiety;
     private Double love;
 

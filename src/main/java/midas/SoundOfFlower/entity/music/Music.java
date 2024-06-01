@@ -22,7 +22,7 @@ public class Music {
     @Column(name = "spotify", unique = true, nullable = false,length = 30)
     private String spotify;
 
-    @Column(name = "emotion_type", nullable = false)
+    @Column(name = "emotion_type", nullable = false,length = 10)
     private String emotionType;
 
     private Double totalLikes;
