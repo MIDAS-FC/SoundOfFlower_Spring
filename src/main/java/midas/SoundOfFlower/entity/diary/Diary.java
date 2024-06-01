@@ -1,10 +1,12 @@
-package midas.SoundOfFlower.entity;
+package midas.SoundOfFlower.entity.diary;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import midas.SoundOfFlower.entity.user.User;
+import midas.SoundOfFlower.entity.music.Music;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class Diary {
     @Column(length = 50)
     private String title;
 
-    @Column(length = 1000)
+    @Column(length = 4000)
     private String comment;
 
     @Column(unique = true)

@@ -2,8 +2,7 @@ package midas.SoundOfFlower.oauth.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import midas.SoundOfFlower.entity.Role;
-import midas.SoundOfFlower.entity.User;
+import midas.SoundOfFlower.entity.user.User;
 import midas.SoundOfFlower.oauth.dto.CustomOAuth2User;
 import midas.SoundOfFlower.oauth.dto.OAuthAttributes;
 import midas.SoundOfFlower.oauth.dto.SocialType;

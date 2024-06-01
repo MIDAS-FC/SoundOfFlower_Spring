@@ -7,8 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import midas.SoundOfFlower.dto.response.DiaryInfoResponse;
 import midas.SoundOfFlower.dto.response.StatisticalEmotionResponse;
-import midas.SoundOfFlower.entity.Diary;
-import midas.SoundOfFlower.entity.QDiaryImage;
+import midas.SoundOfFlower.entity.diary.Diary;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -16,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static midas.SoundOfFlower.entity.QDiary.diary;
-import static midas.SoundOfFlower.entity.QDiaryImage.diaryImage;
-import static midas.SoundOfFlower.entity.QMusicLike.musicLike;
+import static midas.SoundOfFlower.entity.diary.QDiary.diary;
+import static midas.SoundOfFlower.entity.diary.QDiaryImage.diaryImage;
+import static midas.SoundOfFlower.entity.music.QMusicLike.musicLike;
 import static org.springframework.util.StringUtils.isEmpty;
 
 public class DiaryRepositoryImpl implements SearchDiary, DeleteDiary {

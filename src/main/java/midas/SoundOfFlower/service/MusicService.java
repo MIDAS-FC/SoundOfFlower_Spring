@@ -2,12 +2,11 @@ package midas.SoundOfFlower.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import midas.SoundOfFlower.dto.response.DiaryInfoResponse;
 import midas.SoundOfFlower.dto.response.PageResultResponse;
 import midas.SoundOfFlower.dto.response.PlayListResponse;
-import midas.SoundOfFlower.entity.Music;
-import midas.SoundOfFlower.entity.MusicLike;
-import midas.SoundOfFlower.entity.User;
+import midas.SoundOfFlower.entity.music.Music;
+import midas.SoundOfFlower.entity.music.MusicLike;
+import midas.SoundOfFlower.entity.user.User;
 import midas.SoundOfFlower.error.CustomException;
 import midas.SoundOfFlower.redis.entity.MusicTotalLikes;
 import midas.SoundOfFlower.redis.repository.MusicTotalLikesRepository;
@@ -191,6 +190,7 @@ public class MusicService {
     public void sendPlaylist(String playlist) {
 
         try {
+            log.info("playlist:{}", playlist);
             String url = "http://localhost:8000/soundOfFlower/updateDB";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -200,12 +200,12 @@ public class MusicService {
 
             HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestMap, headers);
             PlayListResponse playListResponse = restTemplate.postForObject(url, requestEntity, PlayListResponse.class);
-
+            log.info("a:{}",playListResponse.isValidInput());
             if (!playListResponse.isValidInput()) {
 
                 throw new CustomException(NOT_EXIST_ADMIN_PLAYLIST);
             }
-
+            return;
         } catch (Exception e) {
             throw new CustomException(EXTERNAL_API_FAILURE);
         }

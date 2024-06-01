@@ -1,6 +1,6 @@
 package midas.SoundOfFlower.repository.music;
 
-import midas.SoundOfFlower.entity.Music;
+import midas.SoundOfFlower.entity.music.Music;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

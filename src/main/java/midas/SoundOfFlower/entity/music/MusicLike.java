@@ -1,10 +1,11 @@
-package midas.SoundOfFlower.entity;
+package midas.SoundOfFlower.entity.music;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import midas.SoundOfFlower.entity.user.User;
 
 @Getter
 @NoArgsConstructor

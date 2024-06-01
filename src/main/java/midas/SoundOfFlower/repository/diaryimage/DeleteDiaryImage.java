@@ -1,6 +1,6 @@
 package midas.SoundOfFlower.repository.diaryimage;
 
-import midas.SoundOfFlower.entity.DiaryImage;
+import midas.SoundOfFlower.entity.diary.DiaryImage;
 
 import java.util.List;
 

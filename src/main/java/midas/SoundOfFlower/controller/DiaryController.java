@@ -52,7 +52,6 @@ public class DiaryController {
 
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String socialId = principal.getUsername();
-
         DiaryInfoResponse diaryInfoResponse = diaryService.writeDiary(year, month, day, socialId, writeDiaryRequest,images);
 
         return ResponseEntity.ok(diaryInfoResponse);

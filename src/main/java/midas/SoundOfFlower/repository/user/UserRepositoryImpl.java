@@ -3,7 +3,8 @@ package midas.SoundOfFlower.repository.user;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
-import static midas.SoundOfFlower.entity.QUser.user;
+import static midas.SoundOfFlower.entity.user.QUser.user;
+
 
 public class UserRepositoryImpl implements DeleteUser {
 

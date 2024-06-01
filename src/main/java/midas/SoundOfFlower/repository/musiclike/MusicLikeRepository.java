@@ -1,6 +1,6 @@
 package midas.SoundOfFlower.repository.musiclike;
 
-import midas.SoundOfFlower.entity.MusicLike;
+import midas.SoundOfFlower.entity.music.MusicLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

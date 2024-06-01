@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-import midas.SoundOfFlower.entity.User;
+import midas.SoundOfFlower.entity.user.User;
 import midas.SoundOfFlower.error.CustomException;
 import midas.SoundOfFlower.repository.user.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,4 +1,4 @@
-package midas.SoundOfFlower.entity;
+package midas.SoundOfFlower.entity.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

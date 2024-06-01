@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import midas.SoundOfFlower.entity.User;
+import midas.SoundOfFlower.entity.user.User;
 import midas.SoundOfFlower.error.CustomException;
 import midas.SoundOfFlower.jwt.dto.response.TokenResponse;
 import midas.SoundOfFlower.jwt.error.JwtErrorHandler;

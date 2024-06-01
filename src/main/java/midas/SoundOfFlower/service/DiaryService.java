@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import midas.SoundOfFlower.dto.request.WriteDiaryRequest;
 import midas.SoundOfFlower.dto.response.DiaryInfoResponse;
 import midas.SoundOfFlower.dto.response.StatisticalEmotionResponse;
-import midas.SoundOfFlower.entity.Diary;
-import midas.SoundOfFlower.entity.DiaryImage;
-import midas.SoundOfFlower.entity.Music;
-import midas.SoundOfFlower.entity.User;
+import midas.SoundOfFlower.entity.diary.Diary;
+import midas.SoundOfFlower.entity.diary.DiaryImage;
+import midas.SoundOfFlower.entity.music.Music;
+import midas.SoundOfFlower.entity.user.User;
 import midas.SoundOfFlower.error.CustomException;
 import midas.SoundOfFlower.repository.diary.DiaryRepository;
 import midas.SoundOfFlower.repository.diaryimage.DiaryImageRepository;
@@ -17,6 +17,7 @@ import midas.SoundOfFlower.repository.user.UserRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -42,6 +43,7 @@ public class DiaryService {
     private final RestTemplate restTemplate;
     private final DiaryImageService diaryImageService;
     private final MusicService musicService;
+    private final PasswordEncoder passwordEncoder;
 
     public List<DiaryInfoResponse> searchMonthDiaryInfo(Long year, Long month, String socialId) {
         return diaryRepository.getMonthDiaryInfo(year, month, socialId);
@@ -59,6 +61,7 @@ public class DiaryService {
 
 
         DiaryInfoResponse diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
+
         LocalDate LocalDate = createLocalDate(year, month, day);
         User user = userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new CustomException(NOT_EXIST_USER_SOCIALID));
@@ -75,7 +78,7 @@ public class DiaryService {
 
         List<String> imageUrls = null;
 
-        if (images != null) {
+        if (images != null && !images.isEmpty() && images.get(0).getSize() > 0) {
             imageUrls = diaryImageService.uploadDiaryImages(images);
             diaryInfoResponse.updateImgUrl(imageUrls);
 
@@ -85,7 +88,6 @@ public class DiaryService {
                 diaryImageRepository.save(diaryImage);
             }
         }
-
         return diaryInfoResponse;
     }
 
@@ -115,8 +117,8 @@ public class DiaryService {
                            Music music) {
 
         return Diary.builder()
-                .title(writeDiaryRequest.getTitle())
-                .comment(writeDiaryRequest.getComment())
+                .title(passwordEncoder.encode(writeDiaryRequest.getTitle()))
+                .comment(passwordEncoder.encode(writeDiaryRequest.getComment()))
                 .date(LocalDate)
                 .flower(diaryInfoResponse.getFlower())
                 .angry(diaryInfoResponse.getAngry())
@@ -155,14 +157,14 @@ public class DiaryService {
         DiaryInfoResponse diaryInfoResponse = null;
 
         if (writeDiaryRequest.getTitle() != null) {
-            diary.updateTitle(writeDiaryRequest.getTitle());
+            diary.updateTitle(passwordEncoder.encode(writeDiaryRequest.getTitle()));
             diaryRepository.save(diary);
         }
 
         if (writeDiaryRequest.getComment() != null) {
             diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
             diaryInfoResponse.updateDiaryId(diary.getId());
-            diary.updateComment(writeDiaryRequest.getComment());
+            diary.updateComment(passwordEncoder.encode(writeDiaryRequest.getComment()));
             diary.updateEmotion(diaryInfoResponse.getAngry(),
                     diaryInfoResponse.getSad(),
                     diaryInfoResponse.getDelight(),

@@ -3,14 +3,10 @@ package midas.SoundOfFlower.repository.diaryimage;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import midas.SoundOfFlower.entity.Diary;
-import midas.SoundOfFlower.entity.DiaryImage;
+import midas.SoundOfFlower.entity.diary.DiaryImage;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static midas.SoundOfFlower.entity.QDiary.diary;
-import static midas.SoundOfFlower.entity.QDiaryImage.diaryImage;
 
 @Slf4j
 public class DiaryImageRepositoryImpl implements DeleteDiaryImage {

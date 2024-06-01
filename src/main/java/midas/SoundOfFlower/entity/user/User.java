@@ -1,10 +1,12 @@
-package midas.SoundOfFlower.entity;
+package midas.SoundOfFlower.entity.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import midas.SoundOfFlower.entity.diary.Diary;
+import midas.SoundOfFlower.entity.music.MusicLike;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

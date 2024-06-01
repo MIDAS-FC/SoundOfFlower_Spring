@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import midas.SoundOfFlower.entity.Role;
+import midas.SoundOfFlower.entity.user.Role;
 import midas.SoundOfFlower.jwt.error.JwtErrorHandler;
 import midas.SoundOfFlower.jwt.filter.JwtAuthenticationProcessingFilter;
 import midas.SoundOfFlower.jwt.service.JwtService;

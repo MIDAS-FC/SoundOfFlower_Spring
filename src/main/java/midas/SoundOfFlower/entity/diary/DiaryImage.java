@@ -1,4 +1,4 @@
-package midas.SoundOfFlower.entity;
+package midas.SoundOfFlower.entity.diary;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
