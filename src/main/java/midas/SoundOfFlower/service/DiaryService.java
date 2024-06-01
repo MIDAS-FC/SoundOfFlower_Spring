@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +76,8 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         diaryInfoResponse.updateDiaryId(diary.getId());
+        diaryInfoResponse.updateTitle(diary.getTitle());
+        diaryInfoResponse.updateComment(diary.getComment());
 
         List<String> imageUrls = null;
 
@@ -117,8 +120,8 @@ public class DiaryService {
                            Music music) {
 
         return Diary.builder()
-                .title(passwordEncoder.encode(writeDiaryRequest.getTitle()))
-                .comment(passwordEncoder.encode(writeDiaryRequest.getComment()))
+                .title(URLEncoder.encode(writeDiaryRequest.getTitle()))
+                .comment(URLEncoder.encode(writeDiaryRequest.getComment()))
                 .date(LocalDate)
                 .flower(diaryInfoResponse.getFlower())
                 .angry(diaryInfoResponse.getAngry())
@@ -157,14 +160,16 @@ public class DiaryService {
         DiaryInfoResponse diaryInfoResponse = null;
 
         if (writeDiaryRequest.getTitle() != null) {
-            diary.updateTitle(passwordEncoder.encode(writeDiaryRequest.getTitle()));
+            diaryInfoResponse.updateTitle(diary.getTitle());
+            diary.updateTitle(URLEncoder.encode(writeDiaryRequest.getTitle()));
             diaryRepository.save(diary);
         }
 
         if (writeDiaryRequest.getComment() != null) {
             diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
-            diaryInfoResponse.updateDiaryId(diary.getId());
-            diary.updateComment(passwordEncoder.encode(writeDiaryRequest.getComment()));
+            diaryInfoResponse.updateComment(diary.getComment());
+
+            diary.updateComment(URLEncoder.encode(writeDiaryRequest.getComment()));
             diary.updateEmotion(diaryInfoResponse.getAngry(),
                     diaryInfoResponse.getSad(),
                     diaryInfoResponse.getDelight(),

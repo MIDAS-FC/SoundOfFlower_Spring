@@ -67,4 +67,12 @@ public class DiaryInfoResponse {
     public void setImgUrl(List<String> imgUrl) {
         this.imgUrl = imgUrl;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateComment(String comment) {
+        this.comment = comment;
+    }
 }
