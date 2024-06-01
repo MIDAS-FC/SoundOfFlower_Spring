@@ -31,7 +31,6 @@ public class Diary {
     @Column(length = 4000)
     private String comment;
 
-    @Column(unique = true)
     private LocalDate date;
 
     @Column(length = 10)
