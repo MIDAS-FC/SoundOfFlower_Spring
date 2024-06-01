@@ -44,7 +44,6 @@ public class DiaryService {
     private final RestTemplate restTemplate;
     private final DiaryImageService diaryImageService;
     private final MusicService musicService;
-    private final PasswordEncoder passwordEncoder;
 
     public List<DiaryInfoResponse> searchMonthDiaryInfo(Long year, Long month, String socialId) {
         return diaryRepository.getMonthDiaryInfo(year, month, socialId);
