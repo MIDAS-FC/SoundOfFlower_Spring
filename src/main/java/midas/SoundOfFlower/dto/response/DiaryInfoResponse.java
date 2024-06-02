@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -14,6 +15,8 @@ import java.util.List;
 public class DiaryInfoResponse {
 
     private Long diaryId;
+
+    private LocalDate date;
 
     private String title;
     private String comment;
@@ -74,5 +77,9 @@ public class DiaryInfoResponse {
 
     public void updateComment(String comment) {
         this.comment = comment;
+    }
+
+    public void updateDate(LocalDate localDate) {
+        this.date = localDate;
     }
 }

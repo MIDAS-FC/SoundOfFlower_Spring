@@ -34,6 +34,9 @@ public class DiaryRepositoryImpl implements SearchDiary, DeleteDiary {
         List<DiaryInfoResponse> diaryInfoList = queryFactory
                 .select(Projections.fields(DiaryInfoResponse.class,
                         diary.id.as("diaryId"),
+                        diary.date,
+                        diary.title,
+                        diary.comment,
                         diary.flower,
                         diary.angry,
                         diary.sad,
@@ -75,6 +78,9 @@ public class DiaryRepositoryImpl implements SearchDiary, DeleteDiary {
         DiaryInfoResponse diaryInfoResponse = queryFactory
                 .select(Projections.fields(DiaryInfoResponse.class,
                         diary.id.as("diaryId"),
+                        diary.date,
+                        diary.title,
+                        diary.comment,
                         diary.flower,
                         diary.angry,
                         diary.sad,

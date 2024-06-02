@@ -75,6 +75,7 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         diaryInfoResponse.updateDiaryId(diary.getId());
+        diaryInfoResponse.updateDate(LocalDate);
         diaryInfoResponse.updateTitle(diary.getTitle());
         diaryInfoResponse.updateComment(diary.getComment());
 
