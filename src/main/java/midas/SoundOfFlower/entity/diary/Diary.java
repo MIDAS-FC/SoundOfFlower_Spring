@@ -16,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "DIARY")
+@Table(name = "DIARY", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"social_id", "date"})
+})
 @AllArgsConstructor
 public class Diary {
 
@@ -31,6 +33,7 @@ public class Diary {
     @Column(length = 4000)
     private String comment;
 
+    @Column(unique = true)
     private LocalDate date;
 
     @Column(length = 10)
@@ -44,13 +47,12 @@ public class Diary {
     private Double anxiety;
     private Double love;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "social_id", referencedColumnName = "socialId",nullable = false)
+    @JoinColumn(name = "social_id", referencedColumnName = "socialId", nullable = false, unique = true)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "spotify", referencedColumnName = "spotify",nullable = false)
+    @JoinColumn(name = "spotify", referencedColumnName = "spotify", nullable = false)
     private Music music;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)

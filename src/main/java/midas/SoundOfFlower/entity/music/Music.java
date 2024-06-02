@@ -19,10 +19,10 @@ import java.util.List;
 public class Music {
 
     @Id
-    @Column(name = "spotify", unique = true, nullable = false,length = 30)
+    @Column(name = "spotify", unique = true, nullable = false, length = 30)
     private String spotify;
 
-    @Column(name = "emotion_type", nullable = false,length = 10)
+    @Column(name = "emotion_type", nullable = false, length = 10)
     private String emotionType;
 
     private Double totalLikes;

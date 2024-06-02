@@ -59,6 +59,9 @@ public class DiaryService {
             throw new CustomException(NOT_EXIST_TITLE_DIARY);
         }
 
+        if (writeDiaryRequest.getComment() == null) {
+            throw new CustomException(NOT_EXIST_COMMENT_DIARY);
+        }
 
         DiaryInfoResponse diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
 
@@ -156,13 +159,20 @@ public class DiaryService {
         User user = userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new CustomException(NOT_EXIST_USER_SOCIALID));
 
+
         Diary diary = user.findDiaryByDate(year, month, day);
         DiaryInfoResponse diaryInfoResponse = null;
+
+        if (diary.getId() == null) {
+            throw new CustomException(NOT_EXIST_DIARY);
+        }
 
         if (writeDiaryRequest.getTitle() != null) {
             diaryInfoResponse.updateTitle(diary.getTitle());
             diary.updateTitle(URLEncoder.encode(writeDiaryRequest.getTitle()));
             diaryRepository.save(diary);
+        } else {
+            throw new CustomException(NOT_EXIST_TITLE_DIARY);
         }
 
         if (writeDiaryRequest.getComment() != null) {
@@ -185,6 +195,8 @@ public class DiaryService {
             diary.setUser(user);
 
             diaryRepository.save(diary);
+        } else {
+            throw new CustomException(NOT_EXIST_COMMENT_DIARY);
         }
 
         if (images != null) {
