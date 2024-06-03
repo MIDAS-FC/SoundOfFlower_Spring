@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long>, DeleteUser {
 
     Optional<User> findBySocialTypeAndEmailAndRole(String socialType,String email,String role);
 
-    boolean existsByEmailAndSocialType(String email,String socialType);
+    boolean existsByEmailAndSocialTypeAndRole(String email, String socialType, String role);
     Optional<User> findBySocialId(String socialId);
 
     boolean existsByNickName(String nickName);

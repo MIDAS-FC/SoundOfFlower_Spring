@@ -12,5 +12,6 @@ public class EmailRequest {
     private String email;
     private String emailType;
     private String socialType;
+    private String role;
 
 }

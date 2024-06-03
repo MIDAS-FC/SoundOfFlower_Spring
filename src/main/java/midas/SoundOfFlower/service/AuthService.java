@@ -82,10 +82,10 @@ public class AuthService {
     }
 
     public void validateEmail(EmailRequest emailRequest) {
-        if (userRepository.existsByEmailAndSocialType(emailRequest.getEmail(),emailRequest.getSocialType()) && emailRequest.getEmailType().equals("sign-up")) {
+        if (userRepository.existsByEmailAndSocialTypeAndRole(emailRequest.getEmail(),emailRequest.getSocialType(), emailRequest.getRole()) && emailRequest.getEmailType().equals("sign-up")) {
             throw new CustomException(EXIST_USER_EMAIL_SOCIALTYPE);
         }
-        else if (!userRepository.existsByEmailAndSocialType(emailRequest.getEmail(),emailRequest.getSocialType()) && emailRequest.getEmailType().equals("reset-password")) {
+        else if (!userRepository.existsByEmailAndSocialTypeAndRole(emailRequest.getEmail(),emailRequest.getSocialType(), emailRequest.getRole()) && emailRequest.getEmailType().equals("reset-password")) {
             throw new CustomException(NOT_EXIST_USER_EMAIL_SOCIALTYPE);
         }
     }
@@ -96,8 +96,12 @@ public class AuthService {
         if (userRepository.existsByNickName(nickName)) {
             throw new CustomException(EXIST_USER_NICKNAME);
         }
+
+        String socialId = UUID.randomUUID().toString().replace("-", "").substring(0, 13);
+
         User user=User.builder()
                 .nickName(nickName)
+                .socialId(socialId)
                 .role(USER.getKey())
                 .build();
 
@@ -108,11 +112,10 @@ public class AuthService {
     public void verifyEmail(VerifyEmailRequest verifyEmailRequest) {
         String id = verifyEmailRequest.getEmail() + "_" + verifyEmailRequest.getEmailType() + "_" + verifyEmailRequest.getSocialType();
 
-        if (userRepository.existsByEmailAndSocialType(verifyEmailRequest.getEmail(), verifyEmailRequest.getSocialType())
+        if (userRepository.existsByEmailAndSocialTypeAndRole(verifyEmailRequest.getEmail(), verifyEmailRequest.getSocialType(), verifyEmailRequest.getRole())
                 && verifyEmailRequest.getEmailType().equals("sign-up")) {
             throw new CustomException(EXIST_USER_EMAIL_SOCIALTYPE);
-        }
-        else if (!userRepository.existsByEmailAndSocialType(verifyEmailRequest.getEmail(), verifyEmailRequest.getSocialType())
+        } else if (!userRepository.existsByEmailAndSocialTypeAndRole(verifyEmailRequest.getEmail(), verifyEmailRequest.getSocialType(), verifyEmailRequest.getRole())
                 && verifyEmailRequest.getEmailType().equals("reset-password")) {
             throw new CustomException(NOT_EXIST_USER_EMAIL);
         }
@@ -128,14 +131,13 @@ public class AuthService {
 
     @Transactional
     public void signup(String email, String pw, MultipartFile multipartFile, String nickName) throws IOException {
-        String socialId = UUID.randomUUID().toString().replace("-", "").substring(0, 13);
         String password = passwordEncoder.encode(pw);
         String url;
 
         url = createProfileUrl(multipartFile);
 
         User user = userRepository.findByNickName(nickName).orElseThrow(()->new CustomException(EXIST_USER_NICKNAME));
-        user.updateAll(email, password, socialId,url,SoundOfFlower.getKey());
+        user.updateAll(email, password,url,SoundOfFlower.getKey());
         userRepository.saveAndFlush(user);
     }
 

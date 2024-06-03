@@ -22,7 +22,11 @@ import java.util.List;
 public class User {
 
     @Id
-    @Column(unique = true, length = 100)
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String socialId;
 
     private String email; // 이메일
@@ -59,10 +63,9 @@ public class User {
 
     public void updateRole(String role) {this.role = role;}
 
-    public void updateAll(String email, String pw, String socialId,String url,String socialType) {
+    public void updateAll(String email, String pw,String url,String socialType) {
         this.email = email;
         this.password = pw;
-        this.socialId = socialId;
         this.imageUrl = url;
         this.socialType = socialType;
     }

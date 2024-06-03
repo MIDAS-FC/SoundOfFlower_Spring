@@ -15,4 +15,5 @@ public class VerifyEmailRequest {
     private String emailType;
     private String inputNum;
     private String socialType;
+    private String role;
 }
