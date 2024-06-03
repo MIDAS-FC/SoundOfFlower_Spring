@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "DIARY", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"social_id", "date"})
+        @UniqueConstraint(columnNames = {"socialId", "date"})
 })
 @AllArgsConstructor
 public class Diary {
@@ -27,13 +27,15 @@ public class Diary {
     @Column(name = "diary_id")
     private Long id;
 
+    @Column(name = "social_id", insertable = false, updatable = false, nullable = false, length = 100)
+    private String socialId;
+
     @Column(length = 200)
     private String title;
 
     @Column(length = 4000)
     private String comment;
 
-    @Column(unique = true)
     private LocalDate date;
 
     @Column(length = 10)
@@ -48,7 +50,7 @@ public class Diary {
     private Double love;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "social_id", referencedColumnName = "socialId", nullable = false, unique = true)
+    @JoinColumn(name = "social_id", referencedColumnName = "socialId", nullable = false)
     private User user;
 
     @ManyToOne

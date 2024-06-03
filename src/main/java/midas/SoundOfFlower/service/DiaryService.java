@@ -163,7 +163,7 @@ public class DiaryService {
         Diary diary = user.findDiaryByDate(year, month, day);
         DiaryInfoResponse diaryInfoResponse = null;
 
-        if (diary.getId() == null) {
+        if (diary == null) {
             throw new CustomException(NOT_EXIST_DIARY);
         }
 
