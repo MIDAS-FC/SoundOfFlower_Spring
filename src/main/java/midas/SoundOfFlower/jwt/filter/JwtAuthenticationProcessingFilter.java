@@ -72,7 +72,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
             if (tokenStatus.equals(TokenStatus.EXPIRED) && pathMatcher.match("/token/reissue", requestURI)) {
 
-                String socialId = request.getHeader("socialId");
+                UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                String socialId = principal.getUsername();
                 TokenResponse tokenResponse = authService.validateToken(accessToken.get(), refreshToken.get(), socialId);
                 jwtService.setTokens(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
             } else {
