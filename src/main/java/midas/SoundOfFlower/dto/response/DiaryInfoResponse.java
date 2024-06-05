@@ -35,7 +35,8 @@ public class DiaryInfoResponse {
 
     private String spotify;
 
-    private boolean isLike;
+    private boolean like;
+    private boolean haveSeen;
 
     public void updateFlower(String flower) {
         this.flower = flower;
@@ -63,9 +64,10 @@ public class DiaryInfoResponse {
         this.spotify = spotify;
     }
 
-    public void updateLike(boolean isLike) {
-        this.isLike = isLike;
+    public void updateLike(boolean like) {
+        this.like = like;
     }
+    public void updateHaveSeen(boolean isLike) {this.haveSeen = haveSeen;}
 
     public void setImgUrl(List<String> imgUrl) {
         this.imgUrl = imgUrl;

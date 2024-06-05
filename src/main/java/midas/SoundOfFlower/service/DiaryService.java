@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import midas.SoundOfFlower.dto.request.WriteDiaryRequest;
 import midas.SoundOfFlower.dto.response.DiaryInfoResponse;
+import midas.SoundOfFlower.dto.response.MusicLikesResponse;
 import midas.SoundOfFlower.dto.response.StatisticalEmotionResponse;
 import midas.SoundOfFlower.entity.diary.Diary;
 import midas.SoundOfFlower.entity.diary.DiaryImage;
@@ -74,7 +75,7 @@ public class DiaryService {
         Music music = musicRepository.findBySpotify(diaryInfoResponse.getSpotify())
                 .orElseThrow(() -> new CustomException(NOT_EXIST_MUSIC_SPOTIFY));
 
-        boolean isLiked = getMusicLike(socialId, diaryInfoResponse);
+        MusicLikesResponse musicLike = getMusicLike(socialId, diaryInfoResponse);
 
         Diary diary = getDiary(writeDiaryRequest, diaryInfoResponse, LocalDate, user, music);
         diary.setUser(user);
@@ -85,7 +86,8 @@ public class DiaryService {
         diaryInfoResponse.updateDate(LocalDate);
         diaryInfoResponse.updateTitle(diary.getTitle());
         diaryInfoResponse.updateComment(diary.getComment());
-        diaryInfoResponse.updateLike(isLiked);
+        diaryInfoResponse.updateLike(musicLike.isLike());
+        diaryInfoResponse.updateHaveSeen(musicLike.isHaveSeen());
 
         List<String> imageUrls = null;
 
@@ -183,7 +185,7 @@ public class DiaryService {
         if (writeDiaryRequest.getComment() != null) {
             diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
 
-            boolean isLiked = getMusicLike(socialId, diaryInfoResponse);
+            MusicLikesResponse musicLike = getMusicLike(socialId, diaryInfoResponse);
 
             diaryInfoResponse.updateComment(diary.getComment());
 
@@ -196,8 +198,8 @@ public class DiaryService {
                     diaryInfoResponse.getAnxiety(),
                     diaryInfoResponse.getLove());
             diary.updateFlower(diaryInfoResponse.getFlower());
-            diaryInfoResponse.updateLike(isLiked);
-
+            diaryInfoResponse.updateLike(musicLike.isLike());
+            diaryInfoResponse.updateHaveSeen(musicLike.isHaveSeen());
 
             Music music = musicRepository.findBySpotify(diaryInfoResponse.getSpotify())
                     .orElseThrow(() -> new CustomException(NOT_EXIST_MUSIC_SPOTIFY));
@@ -232,18 +234,20 @@ public class DiaryService {
         return diaryInfoResponse;
     }
 
-    private boolean getMusicLike(String socialId, DiaryInfoResponse diaryInfoResponse) {
+    private MusicLikesResponse getMusicLike(String socialId, DiaryInfoResponse diaryInfoResponse) {
         MusicLike musicLike = musicLikeRepository
                 .findByUser_SocialIdAndMusic_Spotify(socialId, diaryInfoResponse.getSpotify())
                 .orElse(null);
 
-        boolean isLiked = false;
+        boolean like = false;
+        boolean haveSeen = false;
 
         if (musicLike != null) {
-            isLiked=musicLike.getIsLike();
-            diaryInfoResponse.updateLike(isLiked);
+            like=musicLike.getIsLike();
+            haveSeen=true;
         }
-        return isLiked;
+
+        return new MusicLikesResponse(like, haveSeen);
     }
 
     public void deleteDiary(Long year, Long month, Long day, String socialId) {
