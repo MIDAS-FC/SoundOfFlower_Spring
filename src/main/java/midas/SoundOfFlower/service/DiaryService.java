@@ -240,7 +240,8 @@ public class DiaryService {
         boolean isLiked = false;
 
         if (musicLike != null) {
-            diaryInfoResponse.updateLike(musicLike.getIsLike());
+            isLiked=musicLike.getIsLike();
+            diaryInfoResponse.updateLike(isLiked);
         }
         return isLiked;
     }
