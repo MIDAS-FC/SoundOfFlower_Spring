@@ -74,10 +74,7 @@ public class DiaryService {
         Music music = musicRepository.findBySpotify(diaryInfoResponse.getSpotify())
                 .orElseThrow(() -> new CustomException(NOT_EXIST_MUSIC_SPOTIFY));
 
-        boolean isLiked = musicLikeRepository
-                .findByUser_SocialIdAndMusic_Spotify(socialId, diaryInfoResponse.getSpotify())
-                .orElseThrow(()->new CustomException(NOT_EXIST_MUSIC_SPOTIFY))
-                .getIsLike();
+        boolean isLiked = getMusicLike(socialId, diaryInfoResponse);
 
         Diary diary = getDiary(writeDiaryRequest, diaryInfoResponse, LocalDate, user, music);
         diary.setUser(user);
@@ -186,10 +183,7 @@ public class DiaryService {
         if (writeDiaryRequest.getComment() != null) {
             diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
 
-            boolean isLiked = musicLikeRepository
-                    .findByUser_SocialIdAndMusic_Spotify(socialId, diaryInfoResponse.getSpotify())
-                    .orElseThrow(()->new CustomException(NOT_EXIST_MUSIC_SPOTIFY))
-                    .getIsLike();
+            boolean isLiked = getMusicLike(socialId, diaryInfoResponse);
 
             diaryInfoResponse.updateComment(diary.getComment());
 
@@ -236,6 +230,19 @@ public class DiaryService {
 
 
         return diaryInfoResponse;
+    }
+
+    private boolean getMusicLike(String socialId, DiaryInfoResponse diaryInfoResponse) {
+        MusicLike musicLike = musicLikeRepository
+                .findByUser_SocialIdAndMusic_Spotify(socialId, diaryInfoResponse.getSpotify())
+                .orElse(null);
+
+        boolean isLiked = false;
+
+        if (musicLike != null) {
+            diaryInfoResponse.updateLike(musicLike.getIsLike());
+        }
+        return isLiked;
     }
 
     public void deleteDiary(Long year, Long month, Long day, String socialId) {
