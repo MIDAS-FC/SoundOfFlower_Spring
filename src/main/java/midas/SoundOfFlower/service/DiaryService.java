@@ -8,16 +8,17 @@ import midas.SoundOfFlower.dto.response.StatisticalEmotionResponse;
 import midas.SoundOfFlower.entity.diary.Diary;
 import midas.SoundOfFlower.entity.diary.DiaryImage;
 import midas.SoundOfFlower.entity.music.Music;
+import midas.SoundOfFlower.entity.music.MusicLike;
 import midas.SoundOfFlower.entity.user.User;
 import midas.SoundOfFlower.error.CustomException;
 import midas.SoundOfFlower.repository.diary.DiaryRepository;
 import midas.SoundOfFlower.repository.diaryimage.DiaryImageRepository;
 import midas.SoundOfFlower.repository.music.MusicRepository;
+import midas.SoundOfFlower.repository.musiclike.MusicLikeRepository;
 import midas.SoundOfFlower.repository.user.UserRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -41,6 +42,7 @@ public class DiaryService {
     private final DiaryImageRepository diaryImageRepository;
     private final UserRepository userRepository;
     private final MusicRepository musicRepository;
+    private final MusicLikeRepository musicLikeRepository;
     private final RestTemplate restTemplate;
     private final DiaryImageService diaryImageService;
     private final MusicService musicService;
@@ -68,9 +70,14 @@ public class DiaryService {
         LocalDate LocalDate = createLocalDate(year, month, day);
         User user = userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new CustomException(NOT_EXIST_USER_SOCIALID));
+
         Music music = musicRepository.findBySpotify(diaryInfoResponse.getSpotify())
                 .orElseThrow(() -> new CustomException(NOT_EXIST_MUSIC_SPOTIFY));
 
+        boolean isLiked = musicLikeRepository
+                .findByUser_SocialIdAndMusic_Spotify(socialId, diaryInfoResponse.getSpotify())
+                .orElseThrow(()->new CustomException(NOT_EXIST_MUSIC_SPOTIFY))
+                .getIsLike();
 
         Diary diary = getDiary(writeDiaryRequest, diaryInfoResponse, LocalDate, user, music);
         diary.setUser(user);
@@ -81,6 +88,7 @@ public class DiaryService {
         diaryInfoResponse.updateDate(LocalDate);
         diaryInfoResponse.updateTitle(diary.getTitle());
         diaryInfoResponse.updateComment(diary.getComment());
+        diaryInfoResponse.updateLike(isLiked);
 
         List<String> imageUrls = null;
 
@@ -177,6 +185,12 @@ public class DiaryService {
 
         if (writeDiaryRequest.getComment() != null) {
             diaryInfoResponse = analyzeEmotion(writeDiaryRequest.getComment(), writeDiaryRequest.getEmotion(), writeDiaryRequest.getMaintain());
+
+            boolean isLiked = musicLikeRepository
+                    .findByUser_SocialIdAndMusic_Spotify(socialId, diaryInfoResponse.getSpotify())
+                    .orElseThrow(()->new CustomException(NOT_EXIST_MUSIC_SPOTIFY))
+                    .getIsLike();
+
             diaryInfoResponse.updateComment(diary.getComment());
 
             diary.updateComment(URLEncoder.encode(writeDiaryRequest.getComment()));
@@ -188,6 +202,8 @@ public class DiaryService {
                     diaryInfoResponse.getAnxiety(),
                     diaryInfoResponse.getLove());
             diary.updateFlower(diaryInfoResponse.getFlower());
+            diaryInfoResponse.updateLike(isLiked);
+
 
             Music music = musicRepository.findBySpotify(diaryInfoResponse.getSpotify())
                     .orElseThrow(() -> new CustomException(NOT_EXIST_MUSIC_SPOTIFY));
