@@ -61,7 +61,7 @@ public class DiaryController {
     public ResponseEntity<Object> modifyDiary(@RequestParam Long year,
                                               @RequestParam Long month,
                                               @RequestParam Long day,
-                                              @RequestPart(value = "comment") WriteDiaryRequest writeDiaryRequest,
+                                              @RequestPart(value = "diary") WriteDiaryRequest writeDiaryRequest,
                                               @RequestPart(value = "images",required = false) List<MultipartFile> images) throws IOException {
 
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
