@@ -242,11 +242,10 @@ public class DiaryService {
         boolean like = false;
         boolean haveSeen = false;
 
-        if (musicLike != null) {
+        if (musicLike!=null) {
             like=musicLike.getIsLike();
             haveSeen=true;
         }
-
         return new MusicLikesResponse(like, haveSeen);
     }
 

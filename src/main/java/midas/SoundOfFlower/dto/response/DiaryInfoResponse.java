@@ -67,7 +67,7 @@ public class DiaryInfoResponse {
     public void updateLike(boolean like) {
         this.like = like;
     }
-    public void updateHaveSeen(boolean isLike) {this.haveSeen = haveSeen;}
+    public void updateHaveSeen(boolean haveSeen) {this.haveSeen = haveSeen;}
 
     public void setImgUrl(List<String> imgUrl) {
         this.imgUrl = imgUrl;
