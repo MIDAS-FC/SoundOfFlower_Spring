@@ -135,6 +135,7 @@ public class MusicService {
 
         if (topLikedspotifys == null || topLikedspotifys.isEmpty()) {
             List<Music> topLikedMusics = musicRepository.findAll().stream()
+                    .filter(music -> music.getTotalLikes() > 0)
                     .sorted(Comparator.comparingDouble(Music::getTotalLikes).reversed())
                     .limit(limit)
                     .collect(Collectors.toList());
@@ -147,7 +148,7 @@ public class MusicService {
         } else {
             for (String spotifyId : topLikedspotifys) {
                 Double score = redisTemplate.opsForZSet().score(TOTAL_LIKES, spotifyId);
-                if (score != null) {
+                if (score != null && score > 0) {
                     resultMap.put(spotifyId, score);
                 }
             }
@@ -155,6 +156,7 @@ public class MusicService {
 
         return resultMap;
     }
+
 
 
     private static void updateRedisMusicTotalLikes(boolean like, MusicTotalLikes musicTotalLikes) {
